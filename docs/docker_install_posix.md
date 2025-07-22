@@ -8,7 +8,7 @@ Export environment variables as shown in "Sample .bashrc" below.
 1. Install Python 3 (e.g. with Miniconda <https://docs.conda.io/en/latest/miniconda.html>)
 2. Create a directory for storage files and set the ROOT_DIR environment variable to point to it
 3. Create a subdirectory under ROOT_DIR that will be the default location when "bucket" is not defined.
-4. Set the environment variable BUCKET_NAME to the name of the subdirectory
+4. Update the ROOT_DIR and BUCKET_DIR envrioment variables in setup-env-variable.bat and setup-env-variable.sh
 5. Install Docker and docker compose if necessary.  See [Docker Setup](setup_docker.md)
 6. Get project source code: `$ git clone https://github.com/HDFGroup/hsds`
 7. Go to admin/config directory: `$ cd hsds/admin/config`
@@ -24,7 +24,7 @@ Export environment variables as shown in "Sample .bashrc" below.
 17. Perform post install configuration.   See: [Post Install Configuration](post_install.md)
 
 
-Sample .bashrc
+Sample .bashrc -> now setup-env-variable
 --------------
 
 These environment variables will be passed to the Docker containers on start up.

@@ -1,0 +1,6 @@
+set ROOT_DIR=C:\Git\hsds\HSDS_ROOT
+set BUCKET_NAME=hsds.test
+set SN_PORT=5101
+set HSDS_ENDPOINT=http://hsds.hdf.test:%SN_PORT%
+set AWS_S3_GATEWAY=
+set AZURE_CONNECTION_STRING=

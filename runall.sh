@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Source environment variables
+if [ -f "setup-env-variable.sh" ]; then
+  source setup-env-variable.sh
+  echo "Environment variables loaded from setup-env-variable.sh"
+fi
+
 config_value() {
   # For given key return env variable, override.yml value, config.yml value in that order
   # Not a proper yaml parser, but works for simple config we have

@@ -8,3 +8,6 @@
 admin/config/passwd.txt
 admin/config/groups.txt
 data/
+build/
+dist/
+HSDS_ROOT/
