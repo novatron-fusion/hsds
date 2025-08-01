@@ -1,4 +1,17 @@
 services:
+  haproxy:
+    image: haproxy:alpine
+    ports:
+      - "5100:5100"
+    volumes:
+      - ../config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - sn1
+      - sn2
+      - sn3
+      - sn4
+    restart: ${RESTART_POLICY}
+
   head:
     platform: "linux/amd64"
     image: hdfgroup/hsds
@@ -34,19 +47,78 @@ services:
       - ${PWD}/admin/config/:/config/
     links:
       - head
-  sn:
+  sn1:
     platform: "linux/amd64"
     image: hdfgroup/hsds
     restart: ${RESTART_POLICY}
     mem_limit: ${SN_RAM}
     environment:
-      - SN_PORT=${SN_PORT}
       - NODE_TYPE=sn
       - ROOT_DIR=/data
       - BUCKET_NAME=${BUCKET_NAME}
       - HSDS_ENDPOINT=${HSDS_ENDPOINT}
     ports:
-      - ${SN_PORT_RANGE}:${SN_PORT}
+      - "5101:5101"
+    depends_on:
+      - head
+    volumes:
+      - ${ROOT_DIR}:/data
+      - ${PWD}/admin/config/:/config/
+    links:
+      - head
+
+  sn2:
+    platform: "linux/amd64"
+    image: hdfgroup/hsds
+    restart: ${RESTART_POLICY}
+    mem_limit: ${SN_RAM}
+    environment:
+      - NODE_TYPE=sn
+      - ROOT_DIR=/data
+      - BUCKET_NAME=${BUCKET_NAME}
+      - HSDS_ENDPOINT=${HSDS_ENDPOINT}
+    ports:
+      - "5102:5101"
+    depends_on:
+      - head
+    volumes:
+      - ${ROOT_DIR}:/data
+      - ${PWD}/admin/config/:/config/
+    links:
+      - head
+
+  sn3:
+    platform: "linux/amd64"
+    image: hdfgroup/hsds
+    restart: ${RESTART_POLICY}
+    mem_limit: ${SN_RAM}
+    environment:
+      - NODE_TYPE=sn
+      - ROOT_DIR=/data
+      - BUCKET_NAME=${BUCKET_NAME}
+      - HSDS_ENDPOINT=${HSDS_ENDPOINT}
+    ports:
+      - "5103:5101"
+    depends_on:
+      - head
+    volumes:
+      - ${ROOT_DIR}:/data
+      - ${PWD}/admin/config/:/config/
+    links:
+      - head
+
+  sn4:
+    platform: "linux/amd64"
+    image: hdfgroup/hsds
+    restart: ${RESTART_POLICY}
+    mem_limit: ${SN_RAM}
+    environment:
+      - NODE_TYPE=sn
+      - ROOT_DIR=/data
+      - BUCKET_NAME=${BUCKET_NAME}
+      - HSDS_ENDPOINT=${HSDS_ENDPOINT}
+    ports:
+      - "5104:5101"
     depends_on:
       - head
     volumes:

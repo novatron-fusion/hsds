@@ -1,3 +1,3 @@
 # override of HSDS configuration
-greeting: The Novatron HSDS Test Server  # this get display in the /about method
-log_level: DEBUG    # for verbose logging
+greeting: The Novatron HSDS Test Server  # this get display in the /about methods
+max_request_size: 10m # 10 MB - should be no smaller than client_max_body_size in nginx tmpl (if using nginx)

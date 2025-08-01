@@ -106,12 +106,21 @@ if [[ -z ${DN_CORES} ]]; then
 fi
 
 if [[ -z $SN_CORES ]]; then
-  # Use 1 SN_CORE by default
-  export SN_CORES=1
-  export SN_PORT_RANGE=$SN_PORT
-else
-  export SN_PORT_RANGE=$SN_PORT-$((SN_PORT + SN_CORES - 1))
+  # Use 4 SN_CORES by default (changed from 1)
+  export SN_CORES=4
 fi
+
+# Create specific port mappings for each service node
+SN_PORT_LIST=""
+for ((i=0; i<$SN_CORES; i++)); do
+  port=$((SN_PORT + i))
+  if [[ -z $SN_PORT_LIST ]]; then
+    SN_PORT_LIST="$port:$port"
+  else
+    SN_PORT_LIST="$SN_PORT_LIST,$port:$port"
+  fi
+done
+export SN_PORT_RANGE=$SN_PORT_LIST
 
 
 if [[ ${NO_DOCKER} ]]; then
@@ -211,27 +220,25 @@ else
     docker compose -f ${COMPOSE_FILE} down
     exit 0  # can quit now
   else
-    echo "Running docker compose -f ${COMPOSE_FILE} up -d --scale sn=${SN_CORES} --scale dn=${DN_CORES}"
-    docker compose -f ${COMPOSE_FILE} up -d --scale sn=${SN_CORES} --scale dn=${DN_CORES}
+    echo "Running docker compose -f ${COMPOSE_FILE} up -d --scale dn=${DN_CORES}"
+    docker compose -f ${COMPOSE_FILE} up -d --scale dn=${DN_CORES}
   fi
 
-  # wait for the server to be ready
-  for i in {1..120}
-  do
-    STATUS_CODE=`curl -s -o /dev/null -w "%{http_code}" http://localhost:${SN_PORT}/about`
-    if [[ $STATUS_CODE == "200" ]]; then
-      echo "service ready!"
-      break
-    else
-      echo "${i}: waiting for server startup (status: ${STATUS_CODE}) "
-      sleep 1
+  # wait for the server to be ready - check each service node
+  echo "Checking service nodes on ports 5101-5104..."
+  for port in 5101 5102 5103 5104; do
+    for i in {1..30}; do
+      STATUS_CODE=`curl -s -o /dev/null -w "%{http_code}" http://localhost:${port}/about`
+      if [[ $STATUS_CODE == "200" ]]; then
+        echo "Service node on port ${port} ready!"
+        break
+      else
+        echo "${i}: waiting for service node ${port} startup (status: ${STATUS_CODE}) "
+        sleep 1
+      fi
+    done
+    if [[ $STATUS_CODE != "200" ]]; then
+      echo "service node on port ${port} failed to start"
     fi
   done
-
-  if [[ $STATUS_CODE != "200" ]]; then
-    echo "service failed to start"
-    echo "SN_1 logs:"
-    docker logs --tail 100 hsds_sn_1
-    exit 1
-  fi
 fi
