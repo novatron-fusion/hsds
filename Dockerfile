@@ -19,6 +19,8 @@ COPY hsds/util/*.py /usr/local/src/hsds/hsds/util/
 COPY admin/config/config.yml /etc/hsds/
 COPY admin/config/config.yml /usr/local/src/hsds/admin/config/
 COPY entrypoint.sh  /
+# Fix line endings and make executable
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 RUN /bin/bash -c 'cd /usr/local/src/hsds; \
                   pip install build;\
                   python -m build;\

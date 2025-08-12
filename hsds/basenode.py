@@ -559,7 +559,7 @@ def baseInit(node_type):
 
     # create the app object
     log.info("Application baseInit")
-    app = Application()
+    app = Application(client_max_size=10*1024*1024)  # 10 MB
 
     app["node_state"] = "INITIALIZING"
     app["node_number"] = -1

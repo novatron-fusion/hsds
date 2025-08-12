@@ -448,7 +448,7 @@ async def init():
     log_timestamps = config.get("log_timestamps", default=False)
     log.setLogConfig(log_level, prefix=prefix, timestamps=log_timestamps)
 
-    app = Application()
+    app = Application(client_max_size=10 * 1024 * 1024)  # 10 MB
 
     # set a bunch of global state
     app["id"] = createNodeId("head")
